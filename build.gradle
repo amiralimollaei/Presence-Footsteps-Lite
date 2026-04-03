@@ -5,7 +5,7 @@ buildscript {
 }
 plugins {
     id 'java-library'
-    id 'fabric-loom' version '1.13.6'
+    id 'net.fabricmc.fabric-loom' version '1.16.0-alpha.16'
     id 'maven-publish'
     id 'com.modrinth.minotaur' version '2.+'
     id 'org.ajoberstar.reckon' version '0.13.1'
@@ -14,14 +14,17 @@ apply plugin: 'io.github.dexman545.outlet'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
     withSourcesJar()
 }
 
 group = project.group
 description = project.description
-archivesBaseName = project.name
+
+base {
+    archivesName = project.name
+}
 
 reckon {
     scopeFromProp()
@@ -40,16 +43,17 @@ repositories {
     mavenLocal()
     maven { name 'modmenu'; url 'https://maven.terraformersmc.com/releases' }
     maven {name 'Xander Maven'; url 'https://maven.isxander.dev/releases' }
+    maven { name 'Modrinth Maven'; url 'https://api.modrinth.com/maven' }
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.officialMojangMappings()
-    modApi "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
-    modImplementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    implementation "maven.modrinth:yacl:${project.yacl_version}"
+    compileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
+    runtimeOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
 }
 
 processResources {
@@ -85,10 +89,10 @@ modrinth {
     projectId = project.modrinth_project_id
     //featured = true
     versionNumber = version.toString()
-    versionName = archivesBaseName + '-' + version
+    versionName = base.archivesName.get() + '-' + version
     changelog = "[Changelog](https://github.com/amiralimollaei/Presence-Footsteps-Lite/releases/tag/${version.toString()})"
     loaders = ['fabric', 'quilt']
-    uploadFile = remapJar
+    uploadFile = jar
     outlet.mcVersions().each{ver ->
       gameVersions.add ver
     }

@@ -11,7 +11,7 @@ import eu.ha3.presencefootsteps.sound.SoundEngine;
 import eu.ha3.presencefootsteps.util.Edge;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
@@ -87,11 +87,11 @@ public class PresenceFootsteps implements ClientModInitializer {
     public void onInitializeClient() {
         config.load();
 
-        KeyBindingHelper.registerKeyBinding(optionsKeyBinding);
-        KeyBindingHelper.registerKeyBinding(toggleKeyBinding);
-        KeyBindingHelper.registerKeyBinding(debugToggleKeyBinding);
+        KeyMappingHelper.registerKeyMapping(optionsKeyBinding);
+        KeyMappingHelper.registerKeyMapping(toggleKeyBinding);
+        KeyMappingHelper.registerKeyMapping(debugToggleKeyBinding);
         ClientTickEvents.END_CLIENT_TICK.register(this::onTick);
-        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(SoundEngine.ID, engine);
+        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(SoundEngine.ID, engine);
         DebugScreenEntries.register(PFDebugHud.ID, debugHud);
     }
 

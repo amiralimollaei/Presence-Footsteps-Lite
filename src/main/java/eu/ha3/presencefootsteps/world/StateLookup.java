@@ -144,7 +144,7 @@ public record StateLookup(Map<String, Bucket> substrates) implements Lookup.Data
     }
 
     private static String getTagData(BlockState state) {
-        return state.getBlockHolder().tags().map(TagKey::location).map(Identifier::toString).collect(Collectors.joining(","));
+        return state.getBlock().builtInRegistryHolder().tags().map(TagKey::location).map(Identifier::toString).collect(Collectors.joining(","));
     }
 
     private interface Bucket {
@@ -321,13 +321,11 @@ public record StateLookup(Map<String, Bucket> substrates) implements Lookup.Data
                 return true;
             }
 
-            Map<Property<?>, Comparable<?>> entries = state.getValues();
-            Set<Property<?>> keys = entries.keySet();
-
             for (Attribute property : properties) {
-                for (Property<?> key : keys) {
+                for (Property.Value<?> entry : state.getValues().toList()) {
+                    Property<?> key = entry.property();
                     if (key.getName().equals(property.name)) {
-                        Comparable<?> value = entries.get(key);
+                        Comparable<?> value = entry.value();
 
                         if (!Objects.toString(value).equalsIgnoreCase(property.value)) {
                             return false;
