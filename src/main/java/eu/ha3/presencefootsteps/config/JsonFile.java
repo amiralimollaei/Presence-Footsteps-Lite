@@ -5,13 +5,12 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
+import net.minecraft.resources.Identifier;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.InstanceCreator;
 
 import eu.ha3.presencefootsteps.PresenceFootsteps;
-import net.minecraft.util.Identifier;
 
 /**
  * Very simple file loaded from and to json.
@@ -21,7 +20,7 @@ import net.minecraft.util.Identifier;
 public abstract class JsonFile {
     private transient final Gson gson = new GsonBuilder()
             .registerTypeAdapter(getClass(), (InstanceCreator<JsonFile>)t -> this)
-            .registerTypeAdapter(Identifier.class, new ToStringAdapter<>(Identifier::toString, Identifier::of))
+            .registerTypeAdapter(Identifier.class, new ToStringAdapter<>(Identifier::toString, Identifier::parse))
             .setPrettyPrinting()
             .create();
 

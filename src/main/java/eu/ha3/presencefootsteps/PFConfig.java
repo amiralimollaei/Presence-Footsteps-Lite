@@ -3,14 +3,14 @@ package eu.ha3.presencefootsteps;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
+import net.minecraft.CrashReportCategory;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EntityType;
 import eu.ha3.presencefootsteps.config.EntitySelector;
 import eu.ha3.presencefootsteps.config.JsonFile;
 import eu.ha3.presencefootsteps.sound.generator.Locomotion;
-import net.minecraft.entity.EntityType;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.crash.CrashReportSection;
-import net.minecraft.util.math.MathHelper;
 
 public class PFConfig extends JsonFile {
 
@@ -40,9 +40,9 @@ public class PFConfig extends JsonFile {
     private EntitySelector targetEntities = EntitySelector.ALL;
 
     private Set<Identifier> ignoredEntityTypes = Set.of(
-                Identifier.ofVanilla("ghast"),
-                Identifier.ofVanilla("happy_ghast"),
-                Identifier.ofVanilla("phantom")
+                Identifier.withDefaultNamespace("ghast"),
+                Identifier.withDefaultNamespace("happy_ghast"),
+                Identifier.withDefaultNamespace("phantom")
             );
 
     public PFConfig(Path file) {
@@ -66,67 +66,67 @@ public class PFConfig extends JsonFile {
     }
 
     public int getGlobalVolume() {
-        return (int) (MathHelper.clamp(volume, 0.0F, 1.0F) * 100.0F);
+        return (int) (Mth.clamp(volume, 0.0F, 1.0F) * 100.0F);
     }
 
     public void setGlobalVolume(int value) {
-        volume = MathHelper.clamp(value * 0.01F, 0.0F, 1.0F);
+        volume = Mth.clamp(value * 0.01F, 0.0F, 1.0F);
     }
 
     public int getRunningVolumeIncrease() {
-        return (int) (MathHelper.clamp(runningVolumeIncrease, -1.0F, 1.0F) * 100.0F);
+        return (int) (Mth.clamp(runningVolumeIncrease, -1.0F, 1.0F) * 100.0F);
     }
 
     public void setRunningVolumeIncrease(int value) {
-        runningVolumeIncrease = MathHelper.clamp(value * 0.01F, -1.0F, 1.0F);
+        runningVolumeIncrease = Mth.clamp(value * 0.01F, -1.0F, 1.0F);
     }
 
     public int getClientPlayerVolume() {
-        return (int) (MathHelper.clamp(clientPlayerVolume, 0.0F, 1.0F) * 100.0F);
+        return (int) (Mth.clamp(clientPlayerVolume, 0.0F, 1.0F) * 100.0F);
     }
 
     public void setClientPlayerVolume(int value) {
-        clientPlayerVolume = MathHelper.clamp(value * 0.01F, 0.0F, 1.0F);
+        clientPlayerVolume = Mth.clamp(value * 0.01F, 0.0F, 1.0F);
     }
 
     public int getOtherPlayerVolume() {
-        return (int) (MathHelper.clamp(otherPlayerVolume, 0.0F, 1.0F) * 100.0F);
+        return (int) (Mth.clamp(otherPlayerVolume, 0.0F, 1.0F) * 100.0F);
     }
 
     public void setOtherPlayerVolume(int value) {
-        otherPlayerVolume = MathHelper.clamp(value * 0.01F, 0.0F, 1.0F);
+        otherPlayerVolume = Mth.clamp(value * 0.01F, 0.0F, 1.0F);
     }
 
     public int getHostileEntitiesVolume() {
-        return (int) (MathHelper.clamp(hostileEntitiesVolume, 0.0F, 1.0F) * 100.0F);
+        return (int) (Mth.clamp(hostileEntitiesVolume, 0.0F, 1.0F) * 100.0F);
     }
 
     public void setHostileEntitiesVolume(int value) {
-        hostileEntitiesVolume = MathHelper.clamp(value * 0.01F, 0.0F, 1.0F);
+        hostileEntitiesVolume = Mth.clamp(value * 0.01F, 0.0F, 1.0F);
     }
 
     public int getPassiveEntitiesVolume() {
-        return (int) (MathHelper.clamp(passiveEntitiesVolume, 0.0F, 1.0F) * 100.0F);
+        return (int) (Mth.clamp(passiveEntitiesVolume, 0.0F, 1.0F) * 100.0F);
     }
 
     public void setPassiveEntitiesVolume(int value) {
-        passiveEntitiesVolume = MathHelper.clamp(value * 0.01F, 0.0F, 1.0F);
+        passiveEntitiesVolume = Mth.clamp(value * 0.01F, 0.0F, 1.0F);
     }
 
     public int getWetSoundsVolume() {
-        return (int) (MathHelper.clamp(wetSoundsVolume, 0.0F, 1.0F) * 100.0F);
+        return (int) (Mth.clamp(wetSoundsVolume, 0.0F, 1.0F) * 100.0F);
     }
 
     public void setWetSoundsVolume(int value) {
-        wetSoundsVolume = MathHelper.clamp(value * 0.01F, 0.0F, 1.0F);
+        wetSoundsVolume = Mth.clamp(value * 0.01F, 0.0F, 1.0F);
     }
 
     public int getFoliageSoundsVolume() {
-        return (int) (MathHelper.clamp(foliageSoundsVolume, 0.0F, 1.0F) * 100.0F);
+        return (int) (Mth.clamp(foliageSoundsVolume, 0.0F, 1.0F) * 100.0F);
     }
 
     public void setFoliageSoundsVolume(int value) {
-        foliageSoundsVolume = MathHelper.clamp(value * 0.01F, 0.0F, 1.0F);
+        foliageSoundsVolume = Mth.clamp(value * 0.01F, 0.0F, 1.0F);
     }
 
     public int getMaxSteppingEntities() {
@@ -194,15 +194,15 @@ public class PFConfig extends JsonFile {
     }
 
     public boolean isIgnoredForFootsteps(EntityType<?> type) {
-        return this.ignoredEntityTypes.contains(Registries.ENTITY_TYPE.getId(type));
+        return this.ignoredEntityTypes.contains(BuiltInRegistries.ENTITY_TYPE.getKey(type));
     }
 
-    public void populateCrashReport(CrashReportSection section) {
-        section.add("Disabled", getDisabled());
-        section.add("Global Volume", volume);
-        section.add("User's Selected Stance", getLocomotion());
-        section.add("Target Selector", getEntitySelector());
-        section.add("Enabled Global", global);
-        section.add("Enabled Multiplayer", multiplayer);
+    public void populateCrashReport(CrashReportCategory section) {
+        section.setDetail("Disabled", getDisabled());
+        section.setDetail("Global Volume", volume);
+        section.setDetail("User's Selected Stance", getLocomotion());
+        section.setDetail("Target Selector", getEntitySelector());
+        section.setDetail("Enabled Global", global);
+        section.setDetail("Enabled Multiplayer", multiplayer);
     }
 }

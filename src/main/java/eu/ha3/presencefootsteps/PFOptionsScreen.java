@@ -7,7 +7,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import com.google.gson.FormattingStyle;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonWriter;
@@ -24,48 +27,44 @@ import eu.ha3.presencefootsteps.sound.acoustics.AcousticsFile;
 import eu.ha3.presencefootsteps.sound.generator.Locomotion;
 import eu.ha3.presencefootsteps.util.BlockReport;
 import eu.ha3.presencefootsteps.util.ResourceUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 class PFOptionsScreen {
-    public static final Text TITLE = Text.translatable("menu.pf.title");
+    public static final Component TITLE = Component.translatable("menu.pf.title");
 
     Screen build(Screen parentScreen) {
         PFConfig config = PresenceFootsteps.getInstance().getConfig();
 
         return YetAnotherConfigLib.createBuilder()
-                .title(Text.translatable("%s (%s)", TITLE, PresenceFootsteps.getInstance().getOptionsKeyBinding().getBoundKeyLocalizedText()))
+                .title(Component.translatable("%s (%s)", TITLE, PresenceFootsteps.getInstance().getOptionsKeyBinding().getTranslatedKeyMessage()))
                 .category(ConfigCategory.createBuilder()
                         .name(TITLE)
-                        .tooltip(Text.literal("Main options of Presence Footsteps."))
+                        .tooltip(Component.literal("Main options of Presence Footsteps."))
                         .group(OptionGroup.createBuilder()
-                                .name(Text.literal("General"))
-                                .description(OptionDescription.of(Text.literal("Options related to the general functionality of Presence Footsteps.")))
+                                .name(Component.literal("General"))
+                                .description(OptionDescription.of(Component.literal("Options related to the general functionality of Presence Footsteps.")))
                                 .option(Option.<Boolean>createBuilder()
-                                        .name(Text.translatable("key.presencefootsteps.toggle"))
-                                        .description(OptionDescription.of(Text.translatable("menu.pf.disable_mod")))
+                                        .name(Component.translatable("key.presencefootsteps.toggle"))
+                                        .description(OptionDescription.of(Component.translatable("menu.pf.disable_mod")))
                                         .binding(false, config::getDisabled, config::setDisabled)
                                         .controller(opt -> BooleanControllerBuilder.create(opt)
                                                 .formatValue(state ->
-                                                        Text.translatable(
+                                                        Component.translatable(
                                                                 "key.presencefootsteps.toggle." + (state ? "disabled": "enabled")
-                                                        ).formatted(state ? Formatting.RED : Formatting.GREEN))
+                                                        ).withStyle(state ? ChatFormatting.RED : ChatFormatting.GREEN))
                                                 .coloured(false))
                                         .build())
                                 .option(Option.<Boolean>createBuilder()
-                                        .name(Text.translatable("menu.pf.multiplayer"))
+                                        .name(Component.translatable("menu.pf.multiplayer"))
                                         .binding(true, config::getMultiplayer, config::setMultiplayer)
                                         .controller(TickBoxControllerBuilder::create)
                                         .controller(opt -> BooleanControllerBuilder.create(opt)
-                                                .formatValue(state -> Text.translatable("menu.pf.multiplayer." + state))
+                                                .formatValue(state -> Component.translatable("menu.pf.multiplayer." + state))
                                                 .coloured(true))
                                         .build())
                                 .build())
                         .group(OptionGroup.createBuilder()
-                                .name(Text.translatable("menu.pf.group.volume"))
-                                .description(OptionDescription.of(Text.literal("Options related to loudness of sounds that are handled by Presence Footsteps.")))
+                                .name(Component.translatable("menu.pf.group.volume"))
+                                .description(OptionDescription.of(Component.literal("Options related to loudness of sounds that are handled by Presence Footsteps.")))
                                 .option(createVolumeOption("volume", 70, 0, 100, config::getGlobalVolume, config::setGlobalVolume))
                                 .option(createVolumeOption("volume.player", 100, 0, 100, config::getClientPlayerVolume, config::setClientPlayerVolume))
                                 .option(createVolumeOption("volume.other_players", 100, 0, 100, config::getOtherPlayerVolume, config::setOtherPlayerVolume))
@@ -76,10 +75,10 @@ class PFOptionsScreen {
                                 .option(createVolumeOption("volume.running", 0, -100, 100, config::getRunningVolumeIncrease, config::setRunningVolumeIncrease))
                                 .build())
                         .group(OptionGroup.createBuilder()
-                                .name(Text.translatable("menu.pf.group.footsteps"))
-                                .description(OptionDescription.of(Text.literal("Options related to loudness of sounds that are handled by Presence Footsteps.")))
+                                .name(Component.translatable("menu.pf.group.footsteps"))
+                                .description(OptionDescription.of(Component.literal("Options related to loudness of sounds that are handled by Presence Footsteps.")))
                                 .option(Option.<Locomotion>createBuilder()
-                                        .name(Text.translatable("menu.pf.stance"))
+                                        .name(Component.translatable("menu.pf.stance"))
                                         .description(v -> OptionDescription.of(v.getOptionTooltip()))
                                         .binding(new Binding<>() {
                                             @Override
@@ -103,7 +102,7 @@ class PFOptionsScreen {
                                         )
                                         .build())
                                 .option(Option.<EntitySelector>createBuilder()
-                                        .name(Text.translatable("menu.pf.footsteps.targets"))
+                                        .name(Component.translatable("menu.pf.footsteps.targets"))
                                         .binding(new Binding<>() {
                                             @Override
                                             public void setValue(EntitySelector value) {
@@ -129,11 +128,11 @@ class PFOptionsScreen {
                                 .option(createOnOffOption("exclusive_mode", false, config::getExclusive, config::setExclusive))
                                 .build())
                         .group(OptionGroup.createBuilder()
-                                .name(Text.translatable("menu.pf.group.debugging"))
+                                .name(Component.translatable("menu.pf.group.debugging"))
                                 .option(ButtonOption.createBuilder()
-                                        .name(Text.translatable("menu.pf.report.concise"))
-                                        .description(OptionDescription.of(Text.translatable("menu.pf.report.concise.tooltip")))
-                                        .available(MinecraftClient.getInstance().world != null)
+                                        .name(Component.translatable("menu.pf.report.concise"))
+                                        .description(OptionDescription.of(Component.translatable("menu.pf.report.concise.tooltip")))
+                                        .available(Minecraft.getInstance().level != null)
                                         .action((screen, opt) -> {
                                             opt.setAvailable(false);
                                             BlockReport.execute(PresenceFootsteps.getInstance().getEngine().getIsolator(), "report_concise", false)
@@ -141,9 +140,9 @@ class PFOptionsScreen {
                                         })
                                         .build())
                                 .option(ButtonOption.createBuilder()
-                                        .name(Text.translatable("menu.pf.report.full"))
-                                        .description(OptionDescription.of(Text.translatable("menu.pf.report.full.tooltip")))
-                                        .available(MinecraftClient.getInstance().world != null)
+                                        .name(Component.translatable("menu.pf.report.full"))
+                                        .description(OptionDescription.of(Component.translatable("menu.pf.report.full.tooltip")))
+                                        .available(Minecraft.getInstance().level != null)
                                         .action((screen, opt) -> {
                                             opt.setAvailable(false);
                                             BlockReport.execute(PresenceFootsteps.getInstance().getEngine().getIsolator(), "report_full", false)
@@ -151,12 +150,12 @@ class PFOptionsScreen {
                                         })
                                         .build())
                                 .option(ButtonOption.createBuilder()
-                                        .name(Text.translatable("menu.pf.report.acoustics"))
-                                        .description(OptionDescription.of(Text.translatable("menu.pf.report.acoustics.tooltip")))
+                                        .name(Component.translatable("menu.pf.report.acoustics"))
+                                        .description(OptionDescription.of(Component.translatable("menu.pf.report.acoustics.tooltip")))
                                         .action((screen, opt) -> {
                                             opt.setAvailable(false);
                                             BlockReport.execute(loc -> {
-                                                ResourceUtils.forEach(AcousticsFile.FILE_LOCATION, MinecraftClient.getInstance().getResourceManager(), reader -> {
+                                                ResourceUtils.forEach(AcousticsFile.FILE_LOCATION, Minecraft.getInstance().getResourceManager(), reader -> {
                                                     Map<String, Acoustic> acoustics = new HashMap<>();
                                                     @SuppressWarnings("deprecation")
                                                     AcousticsFile file = AcousticsFile.read(reader, acoustics::put, true);
@@ -189,8 +188,8 @@ class PFOptionsScreen {
 
     private Option<Integer> createVolumeOption(String key, Integer def, Integer min, Integer max, Supplier<Integer> getter, Consumer<Integer> setter) {
         return Option.<Integer>createBuilder()
-                .name(Text.translatable("menu.pf." + key))
-                .description(OptionDescription.of(Text.translatable("menu.pf." + key + ".tooltip")))
+                .name(Component.translatable("menu.pf." + key))
+                .description(OptionDescription.of(Component.translatable("menu.pf." + key + ".tooltip")))
                 .binding(def, getter, setter)
                 .controller(opt -> IntegerSliderControllerBuilder.create(opt)
                         .range(min, max)
@@ -201,7 +200,7 @@ class PFOptionsScreen {
 
     public Option<Boolean> createOnOffOption(String key, Boolean def, Supplier<Boolean> getter, Consumer<Boolean> setter) {
         return Option.<Boolean>createBuilder()
-                .name(Text.translatable("menu.pf." + key))
+                .name(Component.translatable("menu.pf." + key))
                 .binding(def, getter, setter)
                 .controller(opt -> BooleanControllerBuilder.create(opt)
                         .onOffFormatter()
